@@ -35,7 +35,7 @@ for (x in state_fips$state){ #loop across all states
 
 
 full <- bind_rows(detailed, .id = "column_label")
-
+write.csv(full, 'year.csv')
 
 
 
