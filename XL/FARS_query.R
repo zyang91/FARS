@@ -5,7 +5,8 @@ library(crashapi)
 library(ggplot2)
 library(dplyr)
 library(rstudioapi)
-
+library(tidyr)
+library(purrr)
 # Set Up
 current_path = rstudioapi::getActiveDocumentContext()$path 
 setwd(dirname(current_path ))
@@ -32,9 +33,13 @@ for (x in state_fips$state){ #loop across all states
   }
   
 }
+# 
+# test <- detailed[1]
+#unnest cols = c(CEvents, NMDrugs, NPersons, NmCrashes, NmImpairs, NmPriors, SafetyEQs, Vehicles)
+full <- bind_rows(detailed, .id = "column_label") %>%  select(where(is.list)) %>% 
+  names() %>% 
+  reduce(~ unnest_longer(.x, all_of(.y)), .init = full)
 
-
-full <- bind_rows(detailed, .id = "column_label")
 write.csv(full, 'year.csv')
 
 
