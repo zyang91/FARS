@@ -1,7 +1,7 @@
 library(duckdb)
 library(tidyverse)
-setwd("/Users/apple/FARS/zy/Tranditional_data")
-con <- dbConnect(duckdb::duckdb(), dbdir = "crash.duckdb")
+setwd("/Users/apple/Desktop/FARS/zy/Tranditional_data")
+con <- dbConnect(duckdb::duckdb(), dbdir = "raw_data.duckdb")
 
 dbListTables(con)
 
@@ -12,6 +12,7 @@ FARS2022_noage<- FARS2022 %>%
   filter(AGE==999|AGE==998)%>%
   select(STATE,AGE,COUNTY)
 
-
+#close connection
+dbDisconnect(con, shutdown = TRUE)
 
 
