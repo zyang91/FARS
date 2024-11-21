@@ -13,7 +13,7 @@ setwd(dirname(current_path ))
 state_fips<-read.csv('./data/fips-by-state.csv')#get state and counties
 state_fips$fips <- ifelse(nchar(state_fips$fips ) == 4, paste0("0", state_fips$fips ), state_fips$fips )
 state_fips$fips  <- substr(state_fips$fips , 3, nchar(state_fips$fips ))
-years= c(2010:2015)
+years= c(2010:2021)
 year= 2010 #set the year you want to use
 
 # Functions for parsing 
@@ -43,6 +43,16 @@ full <- full %>%  select(where(is.list)) %>%
   names() %>% 
   reduce(~ unnest_longer(.x, all_of(.y)), .init = full)
 
+get_fars_zip(
+  year = 2020,
+  format = "csv",
+  path = NULL,
+  pr = FALSE,
+  aux = FALSE,
+  read = TRUE,
+  geometry = FALSE,
+  overwrite = FALSE
+)
 write.csv(full, 'year.csv')
 
 
