@@ -95,7 +95,7 @@ states_sf <- st_read('./us_states_hexgrid.gpkg') %>% left_join(state_dets, by=c(
   left_join(result, by=c('st'='STATE')) %>% st_transform(3857)#project to mercator pcs
 text_inv <- c('black', 'white','white','white','white')
 ggplot(states_sf) +
-  geom_sf(aes(fill= q5(entry_count))) +
+  geom_sf(aes(fill= q5(entry_count)), color='white') +
   scale_fill_manual(values = flatreds5,
                      labels = qBr(states_sf, 'entry_count'), 
                      name = 'Number of Fatalities') +
@@ -109,7 +109,7 @@ ggplot(states_sf) +
        subtitle = 'Aged 19 and under'
        )+
   
-  facet_wrap('year',ncol=4)
+  facet_wrap('YEAR',ncol=4)
 
 
 
