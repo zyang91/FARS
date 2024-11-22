@@ -1,6 +1,6 @@
 library(duckdb)
 library(tidyverse)
-setwd("C:/Users/zyang/OneDrive/Desktop/FARS/zy/Tranditional_data")
+setwd("/Users/apple/Desktop/FARS/zy/Tranditional_data")
 con <- dbConnect(duckdb::duckdb(), dbdir = "raw_data.duckdb")
 
 dbListTables(con)
@@ -51,6 +51,10 @@ FARS2022_filter<- FARS2022_filter%>%
 FARS2022_filter<- FARS2022_filter%>%
   filter(INJ_SEV==4)
 
+FARS2022_filter<- FARS2022_filter%>%
+  mutate(county_code= sprintf("%02d%03d", FARS2022_filter$STATE, FARS2022_filter$COUNTY) )
+
+
 
 ## Function to clean FARS data 2022-2015
 
@@ -85,6 +89,9 @@ process_FARS_data <- function(data) {
   data_filtered <- data_filtered %>%
     filter(INJ_SEV == 4)
   
+  #create unique fips code
+  data_filtered<- data_filtered%>%
+    mutate(county_code= sprintf("%02d%03d", data_filtered$STATE, data_filtered$COUNTY) )
   return(data_filtered)
 }
  #use function
@@ -127,8 +134,13 @@ process_FARS_data2 <- function(data) {
   data_filtered <- data_filtered %>%
     filter(INJ_SEV == 4)
   
+  #create unique fips code
+  data_filtered<- data_filtered%>%
+    mutate(county_code= sprintf("%02d%03d", data_filtered$STATE, data_filtered$COUNTY) )
   return(data_filtered)
 }
+
+
 # use the function
 FARS2014_filtered <- process_FARS_data2(FARS2014)
 FARS2013_filtered <- process_FARS_data2(FARS2013)
@@ -168,6 +180,9 @@ process_FARS_data2020 <- function(data) {
   data_filtered <- data_filtered %>%
     filter(INJ_SEV == 4)
   
+  #create unique fips code
+  data_filtered<- data_filtered%>%
+    mutate(county_code= sprintf("%02d%03d", data_filtered$STATE, data_filtered$COUNTY) )
   return(data_filtered)
 }
 
