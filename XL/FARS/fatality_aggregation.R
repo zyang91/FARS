@@ -42,7 +42,7 @@ con <- dbConnect(duckdb::duckdb(), dbdir = "raw_data.duckdb")
 
 dbListTables(con)
 
-
+# Note here: I changed the age group matches the ACS
 query <- "
   SELECT 
     YEAR,
@@ -52,9 +52,10 @@ query <- "
       WHEN age < 5 THEN 1
       WHEN age >= 5 AND age < 10 THEN 2
       WHEN age >= 10 AND age < 15 THEN 3
-      WHEN age >= 15 AND age < 19 THEN 4
-      WHEN age >= 19 AND age < 200 THEN 5
-      WHEN age >= 200 THEN 6
+      WHEN age >= 15 AND age < 18 THEN 4
+      WHEN age >= 18 AND age < 20 THEN 5
+      WHEN age >= 20 AND age < 200 THEN 6
+      WHEN age >= 200 THEN 7
       ELSE NULL
     END AS AGE_CATEGORY,
     COUNT(*) AS fatality_count
