@@ -20,3 +20,31 @@ fata_al<- fata%>%
   summarise(total_fatalities=sum(fatality_count))
 
 write.csv(full, "full.csv")
+
+
+# read the data 
+full<-read_csv("full.csv")
+
+full<-full%>%
+  select(GEOID, year, AGE_CATEGORY, fatality_count, AGE0_4, AGE5_9, AGE10_14, AGE15_17, AGE18_19)
+
+# calculate the percentage of fatalities in each age group
+calculated_rate<- full%>%
+  mutate(rate= ifelse(AGE_CATEGORY=="1", fatality_count/AGE0_4*1000,
+                      ifelse(AGE_CATEGORY=="2", fatality_count/AGE5_9*1000,
+                             ifelse(AGE_CATEGORY=="3", fatality_count/AGE10_14*1000,
+                                    ifelse(AGE_CATEGORY=="4", fatality_count/AGE15_17*1000,
+                                           ifelse(AGE_CATEGORY=="5", fatality_count/AGE18_19*1000, NA))))))
+
+#test_with age group 1
+# calculated_rate_age1<- calculated_rate%>%
+#   filter(AGE_CATEGORY=="1")%>%
+#   select(GEOID, year, rate)
+
+#simple version datasets extract
+rate<-calculated_rate%>%
+  select(GEOID, year, AGE_CATEGORY, fatality_count, rate)
+
+# export the data
+write.csv(rate, "calaculate_rate.csv")
+write.csv(calculated_rate,"fullwithrate.csv")
