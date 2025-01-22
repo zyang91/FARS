@@ -74,3 +74,117 @@ cbsa_group_rate<- cbsa_group%>%
                              ifelse(AGE_CATEGORY=="3", fatality_count/AGE10_14*1000,
                                     ifelse(AGE_CATEGORY=="4", fatality_count/AGE15_17*1000,
                                            ifelse(AGE_CATEGORY=="5", fatality_count/AGE18_19*1000, NA))))))
+
+write_csv(cbsa_group_rate, "cbsa_agg_rate2017.csv")
+
+
+
+
+
+#2018
+fars_2018<-full%>%
+  filter(year==2018)
+
+full_joined2018<-full_join(fars_2018,cbsa, by="GEOID")
+
+full_join_filter2018<-full_joined2018%>%
+  filter(!is.na(year))
+
+cbsa_group2018<-full_join_filter2018%>%
+  group_by(`CBSA Code`,`CBSA Title`, AGE_CATEGORY)%>%
+  summarise(fatality_count=sum(fatality_count), 
+            AGE0_4=sum(AGE0_4),
+            AGE5_9=sum(AGE5_9),
+            AGE10_14=sum(AGE10_14),
+            AGE15_17=sum(AGE15_17),
+            AGE18_19=sum(AGE18_19))
+
+cbsa_group_rate2018<- cbsa_group2018%>%
+  mutate(rate= ifelse(AGE_CATEGORY=="1", fatality_count/AGE0_4*1000,
+                      ifelse(AGE_CATEGORY=="2", fatality_count/AGE5_9*1000,
+                             ifelse(AGE_CATEGORY=="3", fatality_count/AGE10_14*1000,
+                                    ifelse(AGE_CATEGORY=="4", fatality_count/AGE15_17*1000,
+                                           ifelse(AGE_CATEGORY=="5", fatality_count/AGE18_19*1000, NA))))))
+
+write_csv(cbsa_group_rate2018, "cbsa_agg_rate2018.csv")
+
+#2019
+fars_2019<-full%>%
+  filter(year==2019)
+
+full_joined2019<-full_join(fars_2019,cbsa, by="GEOID")
+
+full_join_filter2019<-full_joined2019%>%
+  filter(!is.na(year))
+
+cbsa_group2019<-full_join_filter2019%>%
+  group_by(`CBSA Code`,`CBSA Title`, AGE_CATEGORY)%>%
+  summarise(fatality_count=sum(fatality_count), 
+            AGE0_4=sum(AGE0_4),
+            AGE5_9=sum(AGE5_9),
+            AGE10_14=sum(AGE10_14),
+            AGE15_17=sum(AGE15_17),
+            AGE18_19=sum(AGE18_19))
+
+cbsa_group_rate2019<- cbsa_group2019%>%
+  mutate(rate= ifelse(AGE_CATEGORY=="1", fatality_count/AGE0_4*1000,
+                      ifelse(AGE_CATEGORY=="2", fatality_count/AGE5_9*1000,
+                             ifelse(AGE_CATEGORY=="3", fatality_count/AGE10_14*1000,
+                                    ifelse(AGE_CATEGORY=="4", fatality_count/AGE15_17*1000,
+                                           ifelse(AGE_CATEGORY=="5", fatality_count/AGE18_19*1000, NA))))))
+
+write_csv(cbsa_group_rate2019, "cbsa_agg_rate2019.csv")
+
+#2021
+fars_2021<-full%>%
+  filter(year==2021)
+
+full_joined2021<-full_join(fars_2021,cbsa, by="GEOID")
+
+full_join_filter2021<-full_joined2021%>%
+  filter(!is.na(year))
+
+cbsa_group2021<-full_join_filter2021%>%
+  group_by(`CBSA Code`,`CBSA Title`, AGE_CATEGORY)%>%
+  summarise(fatality_count=sum(fatality_count), 
+            AGE0_4=sum(AGE0_4),
+            AGE5_9=sum(AGE5_9),
+            AGE10_14=sum(AGE10_14),
+            AGE15_17=sum(AGE15_17),
+            AGE18_19=sum(AGE18_19))
+
+cbsa_group_rate2021<- cbsa_group2021%>%
+  mutate(rate= ifelse(AGE_CATEGORY=="1", fatality_count/AGE0_4*1000,
+                      ifelse(AGE_CATEGORY=="2", fatality_count/AGE5_9*1000,
+                             ifelse(AGE_CATEGORY=="3", fatality_count/AGE10_14*1000,
+                                    ifelse(AGE_CATEGORY=="4", fatality_count/AGE15_17*1000,
+                                           ifelse(AGE_CATEGORY=="5", fatality_count/AGE18_19*1000, NA))))))
+
+write_csv(cbsa_group_rate2021, "cbsa_agg_rate2021.csv")
+
+#2022
+fars_2022<-full%>%
+  filter(year==2022)
+
+full_joined2022<-full_join(fars_2022,cbsa, by="GEOID")
+
+full_join_filter2022<-full_joined2022%>%
+  filter(!is.na(year))
+
+cbsa_group2022<-full_join_filter2022%>%
+  group_by(`CBSA Code`,`CBSA Title`, AGE_CATEGORY)%>%
+  summarise(fatality_count=sum(fatality_count), 
+            AGE0_4=sum(AGE0_4),
+            AGE5_9=sum(AGE5_9),
+            AGE10_14=sum(AGE10_14),
+            AGE15_17=sum(AGE15_17),
+            AGE18_19=sum(AGE18_19))
+
+cbsa_group_rate2022<- cbsa_group2022%>%
+  mutate(rate= ifelse(AGE_CATEGORY=="1", fatality_count/AGE0_4*1000,
+                      ifelse(AGE_CATEGORY=="2", fatality_count/AGE5_9*1000,
+                             ifelse(AGE_CATEGORY=="3", fatality_count/AGE10_14*1000,
+                                    ifelse(AGE_CATEGORY=="4", fatality_count/AGE15_17*1000,
+                                           ifelse(AGE_CATEGORY=="5", fatality_count/AGE18_19*1000, NA))))))
+
+write_csv(cbsa_group_rate2022, "cbsa_agg_rate2022.csv")
