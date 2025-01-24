@@ -14,3 +14,6 @@ cbsa_exclude<- cbsa_join2018%>%
   filter(is.na(rate))
 
 st_write(cbsa_exclude, "cbsa_exclude.gpkg")
+
+
+
