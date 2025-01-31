@@ -156,6 +156,7 @@ census_cbsa<-census_cbsa%>%
   mutate(fatality_rate=fatality_count/population*100000)
 ```
 
+### export
 ```{r}
 write.csv(census_cbsa,"data/MSA_transit_cities_fatality_rate.csv")
 ```
@@ -265,11 +266,7 @@ census_county<-census_county%>%
 ```{r}
 census_county<-census_county%>%
   mutate(county_name=case_when(
-    FIPS=="36005"~"Bronx County,NY",
-    FIPS=="36047"~"Kings County,NY",
     FIPS=="36061"~"New York County,NY",
-    FIPS=="36081"~"Queens County,NY",
-    FIPS=="36085"~"Richmond County,NY",
     FIPS=="17031"~"Cook County,IL",
     FIPS=="42101"~"Philadelphia County,PA",
     FIPS=="06037"~"Los Angeles County,CA",
@@ -280,8 +277,9 @@ census_county<-census_county%>%
     FIPS=="24510"~"Baltimore City,MD",
     FIPS=="42003"~"Allegheny County,PA"
   ))%>%
-  select(-NAME)
+  filter(!is.na(county_name))
 ```
+
 
 ### Export the data
 ```{r}
