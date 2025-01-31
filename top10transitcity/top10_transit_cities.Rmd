@@ -217,6 +217,7 @@ get_county<- function(year){
 ```
 
 pull out ACS
+
 ```{r, message=FALSE,warning=FALSE}
 county_2012<-get_county(2012)
 county_2013<-get_county(2013)
@@ -231,4 +232,58 @@ county_2022<-get_county(2022)
 county_sum<-rbind(county_2012,county_2013,county_2014,county_2015,county_2016,county_2017,county_2018,county_2019,county_2021,county_2022)
 ```
 
+### Gathering Decennial population data
+```{r, message=FALSE,warning=FALSE}
+county_2020<-get_decennial(
+  geography = "county",
+  variables = "P1_001N",
+  year = 2020,
+) %>%
+  filter(GEOID %in% county)%>%
+  mutate(YEAR=2020)
+```
 
+### join the data with FARS county
+```{r}
+census_county<- left_join(FARS_county, county_sum, by = c("FIPS" = "GEOID", "YEAR" = "YEAR")) %>%
+  left_join(county_2020, by = c("FIPS" = "GEOID", "YEAR" = "YEAR"))
+```
+
+```{r}
+census_county<-census_county%>%
+  select(YEAR,FIPS,fatality_count,value,estimate,NAME.x)%>%
+  mutate(population=ifelse(is.na(value),estimate,value))%>%
+  rename(NAME=NAME.x)
+```
+
+```{r}
+census_county<-census_county%>%
+  select(YEAR,FIPS,NAME,fatality_count,population)%>%
+  mutate(fatality_rate=fatality_count/population*100000)
+```
+
+```{r}
+census_county<-census_county%>%
+  mutate(county_name=case_when(
+    FIPS=="36005"~"Bronx County,NY",
+    FIPS=="36047"~"Kings County,NY",
+    FIPS=="36061"~"New York County,NY",
+    FIPS=="36081"~"Queens County,NY",
+    FIPS=="36085"~"Richmond County,NY",
+    FIPS=="17031"~"Cook County,IL",
+    FIPS=="42101"~"Philadelphia County,PA",
+    FIPS=="06037"~"Los Angeles County,CA",
+    FIPS=="11001"~"District of Columbia",
+    FIPS=="25025"~"Suffolk County,MA",
+    FIPS=="53033"~"King County,WA",
+    FIPS=="06075"~"San Francisco County,CA",
+    FIPS=="24510"~"Baltimore City,MD",
+    FIPS=="42003"~"Allegheny County,PA"
+  ))%>%
+  select(-NAME)
+```
+
+### Export the data
+```{r}
+write.csv(census_county,"data/county_transit_cities_fatality_rate.csv")
+```
