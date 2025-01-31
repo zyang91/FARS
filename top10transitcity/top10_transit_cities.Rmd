@@ -69,20 +69,96 @@ FARS_final<-FARS%>%
   summarise(fatality_count=sum(fatality_count))
 ```
 
+### join the county data into the CBSA
+
+```{r}
+cbsa_10_join <- left_join(cbsa_10, FARS_final, by = "FIPS")
+```
+
+aggregate the data to cbsa
+```{r, message=FALSE,warning=FALSE}
+cbsa_10_summarize<-cbsa_10_join%>%
+  group_by(YEAR,cbsa_code,cbsa_name)%>%
+  summarise(fatality_count=sum(fatality_count))
+```
 
 
+```{r}
+cbsa_10_summarize<-cbsa_10_summarize%>%
+  filter(!is.na(fatality_count))
+```
 
+### write a function to get the ACS by year
+```{r, message=FALSE,warning=FALSE}
+get_MSA<- function(year){
+  temp <- get_acs(
+    geography = "metropolitan statistical area/micropolitan statistical area",
+    variables = "B01003_001",
+    year = year,
+    survey = "acs1"
+  ) %>%
+    filter(GEOID %in% MSA) %>%
+  return(temp)
+}
+```
 
+### pull the MSA census data by year
+```{r, message=FALSE,warning=FALSE}
+MSA_2012<-get_MSA(2012)%>%
+  mutate(YEAR=2012)
+MSA_2013<-get_MSA(2013)%>%
+  mutate(YEAR=2013)
+MSA_2014<-get_MSA(2014)%>%
+  mutate(YEAR=2014)
+MSA_2015<-get_MSA(2015)%>%
+  mutate(YEAR=2015)
+MSA_2016<-get_MSA(2016)%>%
+  mutate(YEAR=2016)
+MSA_2017<-get_MSA(2017)%>%
+  mutate(YEAR=2017)
+MSA_2018<-get_MSA(2018)%>%
+  mutate(YEAR=2018)
+MSA_2019<-get_MSA(2019)%>%
+  mutate(YEAR=2019)
+MSA_2021<-get_MSA(2021)%>%
+  mutate(YEAR=2021)
+MSA_2022<-get_MSA(2022)%>%
+  mutate(YEAR=2022)
 
+MSA_ACS<-rbind(MSA_2012,MSA_2013,MSA_2014,MSA_2015,MSA_2016,MSA_2017,MSA_2018,MSA_2019,MSA_2021,MSA_2022)
+```
 
+**Note: 2012 LA Metropolitan area is redistrict, so that we cannot get the ACS data directly from ACS, my suggestion is drop 2012 for LA MSA**
 
+### pull up the 2020 census data
+```{r, message=FALSE,warning=FALSE}
+MSA_2020<-get_decennial(
+  geography = "metropolitan statistical area/micropolitan statistical area",
+  variables = "P1_001N",
+  year = 2020,
+) %>%
+  filter(GEOID %in% MSA) %>%
+  mutate(YEAR=2020)
+```
+### join the census and ACS data into the FARS 
+```{r}
+census_cbsa<- left_join(cbsa_10_summarize, MSA_ACS, by = c("cbsa_code" = "GEOID", "YEAR" = "YEAR")) %>%
+  left_join(MSA_2020, by = c("cbsa_code" = "GEOID", "YEAR" = "YEAR"))
 
+census_cbsa<-census_cbsa%>%
+  select(YEAR,cbsa_code,cbsa_name,fatality_count,value,estimate)%>%
+  mutate(population=ifelse(is.na(value),estimate,value))
+```
 
+### calculate the fatality rate
+```{r}
+census_cbsa<-census_cbsa%>%
+  mutate(fatality_rate=fatality_count/population*100000)
+```
 
-
-
-
-
+```{r}
+write.csv(census_cbsa,"data/MSA_transit_cities_fatality_rate.csv")
+```
 
 
 
