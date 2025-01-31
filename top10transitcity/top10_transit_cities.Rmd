@@ -200,4 +200,35 @@ FARS_county<-FARS_final%>%
   filter(FIPS %in% county)
 ```
 
+### Gathering ACS population data
+function for ACS
+```{r}
+get_county<- function(year){
+  temp <- get_acs(
+    geography = "county",
+    variables = "B01003_001",
+    year = year,
+    survey = "acs1",
+  ) %>%
+    filter(GEOID %in% county)%>%
+    mutate(YEAR=year)%>%
+  return(temp)
+}
+```
+
+pull out ACS
+```{r, message=FALSE,warning=FALSE}
+county_2012<-get_county(2012)
+county_2013<-get_county(2013)
+county_2014<-get_county(2014)
+county_2015<-get_county(2015)
+county_2016<-get_county(2016)
+county_2017<-get_county(2017)
+county_2018<-get_county(2018)
+county_2019<-get_county(2019)
+county_2021<-get_county(2021)
+county_2022<-get_county(2022)
+county_sum<-rbind(county_2012,county_2013,county_2014,county_2015,county_2016,county_2017,county_2018,county_2019,county_2021,county_2022)
+```
+
 
