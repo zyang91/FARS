@@ -1,6 +1,6 @@
 ---
 title: "transit cities"
-author: "Zhanchao Yang"
+author: "Zhanchao Yang, Xian Lu Lee"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -283,5 +283,60 @@ census_county<-census_county%>%
 
 ### Export the data
 ```{r}
-write.csv(census_county,"data/county_transit_cities_fatality_rate.csv")
+census_county %>% select(FIPS,NAME) %>% right_join(census_county %>% select(-NAME),by='FIPS')
+# write.csv(census_county,"data/county_transit_cities_fatality_rate.csv")
 ```
+
+
+
+##Visualizations
+```{r fig.width=15, fig.height=8}
+library(ggplot2)
+library(ggrepel)
+census_county %>% ggplot()+
+  geom_line(aes(x=YEAR, y=fatality_rate, color=county_name),lwd=1) +
+  scale_color_manual(values = c('#9c5f4f',
+'#ff540b',
+'#701a31',
+'#c9687a',
+'#790c1d',
+'#e07537',
+'#de9670',
+'#cb0017',
+'#7a2400',
+'#9f1700'))+
+   geom_text(data = census_county%>% group_by(county_name) %>% filter(YEAR == max(YEAR)),
+                  
+                  aes(label = county_name, x=YEAR, y=fatality_rate),
+                  nudge_x = 0.2, hjust = 0, size=3) +
+  xlim(2012,2023)+
+  theme_minimal() +
+  labs(x = "Year", y = "Fatality Rate (per 100000)", color = "County Name")+
+  theme(legend.position = 'hide')+
+  ggtitle("Changes in Fatality Rates (2012-2022)", subtitle = 'Counties')
+```
+
+```{r fig.width=15, fig.height=8}
+census_cbsa %>% ggplot()+
+  geom_line(aes(x=YEAR, y=fatality_rate, color=cbsa_name),lwd=1) +
+  scale_color_manual(values = c('#9c5f4f',
+'#ff540b',
+'#701a31',
+'#c9687a',
+'#790c1d',
+'#e07537',
+'#de9670',
+'#cb0017',
+'#7a2400',
+'#9f1700'))+
+   geom_text_repel(data = census_cbsa%>% group_by(cbsa_name) %>% filter(YEAR == max(YEAR)),
+                  
+                  aes(label = cbsa_name, x=YEAR, y=fatality_rate),
+                  nudge_x = 1, hjust = 0, size=3, segment.color=NA,direction = "y") +
+  xlim(2012,2024)+
+  theme_minimal() +
+  labs(x = "Year", y = "Fatality Rate (per 100000)", color = "County Name")+
+  theme(legend.position = 'hide')+
+  ggtitle("Changes in Fatality Rates (2012-2022)", subtitle = 'Core Based Statistical Areas')
+```
+
