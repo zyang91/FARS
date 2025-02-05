@@ -12,7 +12,7 @@ library(tidycensus)
 library(tidyverse)
 library(readxl)
 ```
-##Data prepare
+## Data prepare
 ### Data input
 ```{r, message=FALSE,warning=FALSE}
 FARS <- read.csv("data/mastersheetFARS.csv")
@@ -32,7 +32,7 @@ FIPS code creation
 FARS$FIPS<-sprintf("%02d%03d", FARS$STATE, FARS$COUNTY)
 ```
 
-##CBSA
+## CBSA
 cbsa code filtering only include selecting counties
 cities:  NYC, Chicago, Philadelphia, LA, D.C., Boston, Seattle, SF, Baltimore, Pittsburgh
 cbsa code for 10 cities on the list 
@@ -282,14 +282,14 @@ census_county<-census_county%>%
 
 
 ### Export the data
-```{r}
+```{r, message=FALSE,warning=FALSE}
 census_county %>% select(FIPS,NAME) %>% right_join(census_county %>% select(-NAME),by='FIPS')
 # write.csv(census_county,"data/county_transit_cities_fatality_rate.csv")
 ```
 
 
 
-##Visualizations
+## Visualizations
 ```{r fig.width=15, fig.height=8}
 library(ggplot2)
 library(ggrepel)
@@ -337,6 +337,30 @@ census_cbsa %>% ggplot()+
   theme_minimal() +
   labs(x = "Year", y = "Fatality Rate (per 100000)", color = "County Name")+
   theme(legend.position = 'hide')+
+  ggtitle("Changes in Fatality Rates (2012-2022)", subtitle = 'Core Based Statistical Areas')
+```
+```{r,fig.width=15, fig.height=8}
+census_county %>% ggplot()+
+  geom_line(aes(x=YEAR, y=fatality_rate, color=county_name),lwd=1) +
+   geom_text(data = census_county%>% group_by(county_name) %>% filter(YEAR == max(YEAR)),
+                  aes(label = county_name, x=YEAR, y=fatality_rate),
+                  nudge_x = 0.2, hjust = 0, size=3) +
+  xlim(2012,2023)+
+  theme_minimal() +
+  labs(x = "Year", y = "Fatality Rate (per 100000)", color = "County Name")+
+  theme(legend.position = 'right')+
+  ggtitle("Changes in Fatality Rates (2012-2022)", subtitle = 'Counties')
+```
+```{r,fig.width=15, fig.height=8}
+census_cbsa %>% ggplot()+
+  geom_line(aes(x=YEAR, y=fatality_rate, color=cbsa_name),lwd=1) +
+   geom_text_repel(data = census_cbsa%>% group_by(cbsa_name) %>% filter(YEAR == max(YEAR)),
+                  aes(label = cbsa_name, x=YEAR, y=fatality_rate),
+                  nudge_x = 1, hjust = 0, size=3, segment.color=NA,direction = "y") +
+  xlim(2012,2024)+
+  theme_minimal() +
+  labs(x = "Year", y = "Fatality Rate (per 100000)", color = "CBSA Name")+
+  theme(legend.position = 'bottom')+
   ggtitle("Changes in Fatality Rates (2012-2022)", subtitle = 'Core Based Statistical Areas')
 ```
 
