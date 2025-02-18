@@ -185,6 +185,31 @@ full<-full%>%
   select(cbsa_code,title.x,fatality_rate.x,fatality_rate.y)%>%
   rename(title=title.x,children=fatality_rate.x,total=fatality_rate.y)
 
+write.csv(full, "together.csv")
+
+ggplot(full, aes(x=children, y=total))+
+  geom_point()+
+  geom_smooth(method = "lm", se=FALSE)+
+  labs(
+    title="CBSA fatality rate",
+    subtitle = "Top 30 most populated, 2017 - 2022",
+    x="Children Fatality Rate (per 100,000)",
+    y="Total Fatality Rate (per 100,000)"
+  )+
+  theme_minimal(base_size=12)+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5),
+    axis.text.y = element_text(size = 8),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    legend.title = element_text(size = 10),  # Smaller legend title
+    legend.text = element_text(size = 8),   # Smaller legend text
+    legend.key.size = unit(0.6, "lines") 
+  )
+model1<-lm(total~children, data=full)
+summary(model1)
+
 # better plot
 ggplot(full_children_total, aes(x = fatality_rate, 
                   y = reorder(title, fatality_rate), 
