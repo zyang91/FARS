@@ -62,3 +62,80 @@ full<-full%>%
   summarise(total_fatalities=sum(total_fatalities))
 
 write.csv(full, "cbsa_fatality.csv", row.names = FALSE)
+
+full<-read.csv("cbsa_fatality.csv")
+
+pop2017<-get_acs(
+  geography = "metropolitan statistical area/micropolitan statistical area",
+  variables = "B01003_001",
+  year= 2017,
+  survey = "acs1",
+  output="wide"
+)
+pop2018<-get_acs(
+  geography = "metropolitan statistical area/micropolitan statistical area",
+  variables = "B01003_001",
+  year= 2018,
+  survey = "acs1",
+  output="wide"
+)
+pop2019<-get_acs(
+  geography = "metropolitan statistical area/micropolitan statistical area",
+  variables = "B01003_001",
+  year= 2019,
+  survey = "acs1",
+  output="wide"
+)
+pop2021<-get_acs(
+  geography = "metropolitan statistical area/micropolitan statistical area",
+  variables = "B01003_001",
+  year= 2021,
+  survey = "acs1",
+  output="wide"
+)
+pop2022<-get_acs(
+  geography = "metropolitan statistical area/micropolitan statistical area",
+  variables = "B01003_001",
+  year= 2022,
+  survey = "acs1",
+  output="wide"
+)
+
+pop<-rbind(pop2017, pop2018, pop2019, pop2021, pop2022)
+
+pop<-pop%>%
+  rename(pop="B01003_001E")%>%
+  select(NAME,pop,GEOID)
+
+pop_summary<-pop%>%
+  group_by(GEOID)%>%
+  summarise(total_pop=sum(pop))
+
+pop_summary$GEOID<-as.numeric(pop_summary$GEOID)
+final<-left_join(full, pop_summary, by=c("cbsa_code"="GEOID"))
+
+final<-final%>%
+  mutate(fatality_rate=total_fatalities/total_pop*100000)
+
+write.csv(final, "cbsa_fatality_rate.csv", row.names = FALSE)
+
+ggplot(final,aes(x=fatality_rate,y=reorder(title,fatality_rate),fill=total_pop))+
+  geom_col()+
+  scale_fill_gradient(low="#56B1F7", high="#132B43", name="Population")+
+  labs(
+    title="CBSA fatality rate",
+    subtitle = "Top 30 most populated, 2017 - 2022",
+    x="Fatality Rate (per 100,000)",
+    y="Metropolitan Area"
+  )+
+  theme_minimal(base_size=12)+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5),
+    axis.text.y = element_text(size = 8),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    legend.title = element_text(size = 10),  # Smaller legend title
+    legend.text = element_text(size = 8),   # Smaller legend text
+    legend.key.size = unit(0.6, "lines") 
+  )
