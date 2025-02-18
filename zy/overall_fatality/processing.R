@@ -139,3 +139,75 @@ ggplot(final,aes(x=fatality_rate,y=reorder(title,fatality_rate),fill=total_pop))
     legend.text = element_text(size = 8),   # Smaller legend text
     legend.key.size = unit(0.6, "lines") 
   )
+
+highest30<-highest_50%>%
+  arrange(desc(pop_under18))%>%
+  slice(1:30)
+
+fatality<-read.csv("cbsa_fatality_rate.csv")
+highest30<-highest30%>%
+  rename(title=cbsa_name,fatality_rate=rate)
+
+highest30<-highest30%>%
+  select(cbsa_code,title,fatality_rate)%>%
+  mutate(variable="children")
+fatality<-fatality%>%
+  select(cbsa_code,title,fatality_rate)%>%
+  mutate(variable="total")
+
+full_children_total <- rbind(highest30, fatality)
+
+# not an ideal plot
+ggplot(full_children_total,aes(x=fatality_rate,y=reorder(title,fatality_rate),fill=variable))+
+  geom_col()+
+  facet_wrap(~ variable) +
+  scale_fill_manual(values=c("children"="#56B1F7","total"="#132B43"), name="Population")+
+  labs(
+    title="CBSA fatality rate",
+    subtitle = "Top 30 most populated, 2017 - 2022",
+    x="Fatality Rate (per 100,000)",
+    y="Metropolitan Area"
+  )+
+  theme_minimal(base_size=12)+
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5),
+    axis.text.y = element_text(size = 8),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    legend.title = element_text(size = 10),  # Smaller legend title
+    legend.text = element_text(size = 8),   # Smaller legend text
+    legend.key.size = unit(0.6, "lines") 
+  )
+
+full<-left_join(highest30, fatality, by="cbsa_code")
+full<-full%>%
+  select(cbsa_code,title.x,fatality_rate.x,fatality_rate.y)%>%
+  rename(title=title.x,children=fatality_rate.x,total=fatality_rate.y)
+
+# better plot
+ggplot(full_children_total, aes(x = fatality_rate, 
+                  y = reorder(title, fatality_rate), 
+                  fill = variable, 
+                  group = variable)) +
+  geom_col(aes(color = variable), position = position_dodge(width = 0.8)) +
+  scale_color_manual(name = "Group", 
+                     values = c("Group1" = "#000000", "Group2" = "#FF5733")) +  # adjust groups & colors as needed
+  labs(
+    title = "CBSA fatality rate",
+    subtitle = "Top 30 most populated, 2017 - 2022",
+    x = "Fatality Rate (per 100,000)",
+    y = "Metropolitan Area"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title       = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle    = element_text(hjust = 0.5),
+    axis.text.y      = element_text(size = 8),
+    axis.title.x     = element_text(size = 12),
+    axis.title.y     = element_text(size = 12),
+    legend.title     = element_text(size = 10),
+    legend.text      = element_text(size = 8),
+    legend.key.size  = unit(0.6, "lines")
+  )
+
