@@ -313,7 +313,22 @@ census_county %>% ggplot()+
   theme_minimal() +
   labs(x = "Year", y = "Fatality Rate (per 100000)", color = "County Name")+
   theme(legend.position = 'hide')+
-  ggtitle("Changes in Fatality Rates (2012-2022)", subtitle = 'Counties')
+  ggtitle("Changes in Fatality Rates (2012-2022)", subtitle = 'Counties') 
+  ggsave(
+  'fatalities_county.jpg',
+  plot = last_plot(),
+  device = NULL,
+  path = NULL,
+  scale = 1,
+  width = 15,
+  height = 8,
+  units = "in",
+  dpi = 300,
+  limitsize = TRUE,
+  bg = NULL,
+  create.dir = FALSE,
+  
+)
 ```
 
 ```{r fig.width=15, fig.height=8}
@@ -338,6 +353,22 @@ census_cbsa %>% ggplot()+
   labs(x = "Year", y = "Fatality Rate (per 100000)", color = "County Name")+
   theme(legend.position = 'hide')+
   ggtitle("Changes in Fatality Rates (2012-2022)", subtitle = 'Core Based Statistical Areas')
+
+ggsave(
+  'fatalities_cbsa.jpg',
+  plot = last_plot(),
+  device = NULL,
+  path = NULL,
+  scale = 1,
+  width = 15,
+  height = 8,
+  units = "in",
+  dpi = 300,
+  limitsize = TRUE,
+  bg = NULL,
+  create.dir = FALSE,
+  
+)
 ```
 ```{r,fig.width=15, fig.height=8}
 census_county %>% ggplot()+
@@ -363,4 +394,5 @@ census_cbsa %>% ggplot()+
   theme(legend.position = 'bottom')+
   ggtitle("Changes in Fatality Rates (2012-2022)", subtitle = 'Core Based Statistical Areas')
 ```
+
 

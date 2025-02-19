@@ -1,0 +1,105 @@
+---
+title: "MSA FARS Averages"
+author: "Xian Lu, LEE"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+years_filtered <- read.csv('./full_filtered.csv')
+msa <- read.csv('./MSA_2023.csv')
+library(dplyr)
+library(sf)
+library(ggplot2)
+library(forcats)
+flatreds5 <- c('#f9ebea','#e6b0aa','#cd6155', '#cd6155','#7b241c')
+source("https://raw.githubusercontent.com/urbanSpatial/Public-Policy-Analytics-Landing/master/functions.r")
+library(stringr)
+
+
+years_filtered <- years_filtered %>% 
+  mutate(GEOID=str_pad(GEOID, 5, pad = "0")) %>% 
+  
+  mutate(FIPS.State.Code=substr(GEOID,1,nchar(GEOID)-3),
+                                            FIPS.County.Code=substr(GEOID, 3, nchar(GEOID)))
+years_filtered$FIPS.State.Code <- as.numeric(years_filtered$FIPS.State.Code)
+years_filtered$FIPS.County.Code <- as.numeric(years_filtered$FIPS.County.Code)
+
+msa_agg <- years_filtered %>% left_join(msa)%>% mutate(POP_UNDER_18= rowSums(select(., starts_with("AGE")))) %>% 
+  group_by(CBSA.Code,year,AGE_CATEGORY) %>% 
+    mutate(POP_UNDER_18_CBSA= sum(POP_UNDER_18),
+      fat_cbsa_year_age= sum(fatality_count),
+           rate_cbsa_age= mean(fat_cbsa_year_age)/mean(POP_UNDER_18_CBSA)*100000) %>% ungroup() %>% 
+group_by(CBSA.Code,year) %>% 
+    mutate(fat_cbsa_year= sum(fatality_count) 
+           ) %>% 
+    group_by(CBSA.Code) %>% mutate(
+            mean_pop=mean(POP_UNDER_18_CBSA),
+           rate_cbsa=mean(fat_cbsa_year)/mean(POP_UNDER_18_CBSA)*100000)
+
+msa_filtered <- msa_agg %>% select(AGE_CATEGORY, mean_pop, CBSA.Code,CBSA.Title, Metropolitan.Micropolitan.Statistical.Area, rate_cbsa_age, rate_cbsa)
+cbsa_shp <- st_read('./SHP/tl_2024_us_cbsa.shp')
+nation_shp <- st_read('./SHP/cb_2018_us_nation_20m.shp') %>%st_union()
+
+
+#TOP 20 POPULATED
+rate_sf <- msa_filtered%>% filter(Metropolitan.Micropolitan.Statistical.Area=='Metropolitan Statistical Area') %>% 
+ungroup()  %>% select(CBSA.Code,CBSA.Title,rate_cbsa,mean_pop) %>% distinct() %>% 
+  slice_max(mean_pop,n= 30) %>%
+  distinct()%>% mutate(CBSA.Code = as.character(CBSA.Code)) %>%  left_join(cbsa_shp, by= c('CBSA.Code'='GEOID' )) %>% st_as_sf() 
+
+
+ggplot(rate_sf)+
+  geom_sf(nation_shp, mapping=aes(),fill='grey80', color=NA)+
+  geom_sf(aes(fill= rate_cbsa))+
+  xlim(-180, -60)+
+  theme_void()
+
+ggplot(rate_sf)+
+  geom_col(aes(rate_cbsa, fct_reorder(CBSA.Title, rate_cbsa), fill = q5(mean_pop)))+
+  scale_fill_manual(values = flatreds5,
+                    labels = qBr(rate_sf, "mean_pop"), 
+                    name = 'Mean Population (Quintiles)') +
+   labs(
+    title = "Childhood fatality rates across Metropolitan Areas",
+    subtitle = "Top 30 most populated, 2017 - 2022")+
+  xlab('Fatality Rate (per 100000)')+
+  ylab('Metropolitan Areas')+
+  theme_minimal()
+
+
+# write.csv(msa_filtered, 'msa_filtered_agg.csv')
+# write.csv(msa_agg, 'msa_agg.csv')
+
+```
+
+```{r}
+library(cartogram)
+
+carto <-  cartogram_dorling(x = rate_sf %>% st_transform(5070), #albers equal area for us
+                                    weight = "rate_cbsa",
+                                    k=0.3,
+                                     itermax = 300)
+
+ggplot(carto)+
+  geom_sf(nation_shp %>% st_transform(5070), mapping=aes(),fill='grey90', color=NA)+
+  geom_sf(aes(fill= q5(rate_cbsa)), color='grey80',lwd=0.2)+
+  scale_fill_manual(values = flatreds5,
+                    labels = qBr(carto, "rate_cbsa"), 
+                    name = 'Fatalities per 100000 (Quintiles)') +
+   labs(
+    title = "Child traffic fatality rates across Metropolitan Areas",
+    subtitle = "Top 30 most populated, 2017-2022")+
+  ylim(350000, 3200000)+
+  xlim(-2500000, 2500000)+
+  theme_minimal()+
+  
+  theme(legend.direction = 'horizontal',
+        legend.position = 'bottom')
+
+```
+
+
+```{r}
+```
+
