@@ -3,6 +3,7 @@ library(tidycensus)
 library(tidyverse)
 library(lubridate)
 library(sf)
+library(ggrepel)
 
 # load the data
 list<-read_excel("data/cbsa_list.xlsx")
@@ -187,9 +188,13 @@ full<-full%>%
 
 write.csv(full, "together.csv")
 
-ggplot(full, aes(x=children, y=total))+
+together<-read.csv("together.csv")
+
+
+ggplot(together, aes(x=children, y=total,label=title))+
   geom_point()+
   geom_smooth(method = "lm", se=FALSE)+
+  geom_text_repel(size = 3, box.padding = 0.5, point.padding = 0.3)+
   labs(
     title="CBSA fatality rate",
     subtitle = "Top 30 most populated, 2017 - 2022",
