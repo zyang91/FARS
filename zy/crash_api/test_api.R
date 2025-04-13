@@ -50,15 +50,14 @@ crashes_broome <-
     details=TRUE
   )
 
-full <- bind_rows(crashes_autauga2022, .id = "column_label") %>% 
+full <- bind_rows(crashes_autauga2022, .id = "column_label") %>%
   select(where(is.list))%>%
   names() %>%
   reduce(~ unnest_longer(.x, all_of(.y)), .init = crashes_autauga2022)
 
 str(full)
 Npersons <- data.frame(full$NPersons)
-  
 
 
 
- 
+

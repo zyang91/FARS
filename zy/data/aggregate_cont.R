@@ -24,21 +24,21 @@ aggregation <- function(data) {
   # Add population under 19
   data <- data %>%
     mutate(pop_under18 = AGE0_4 + AGE5_9 + AGE10_14 + AGE15_17)
-  
+
   # Summarize fatality count by cbsa_code and cbsa_name
   final_summary <- data %>%
     select(cbsa_code, cbsa_name, pop_under18, fatality_count) %>%
     group_by(cbsa_code, cbsa_name) %>%
     summarise(fatality_count = sum(fatality_count, na.rm = TRUE), .groups = "drop")
-  
+
   # Simplify dataset for pop_under19
   simple_data <- data %>%
     select(cbsa_code, pop_under18)
-  
+
   # Join summarized data with simplified data
   final <- inner_join(final_summary, simple_data, by = "cbsa_code") %>%
     distinct(cbsa_code, .keep_all = TRUE)
-  
+
   return(final)
 }
 final2017<-aggregation(agg2017)

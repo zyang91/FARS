@@ -186,7 +186,7 @@
          <gmd:abstract>
             <gco:CharacterString>The TIGER/Line shapefiles and related database files (.dbf) are an extract of selected geographic and cartographic information from the U.S. Census Bureau's Master Address File / Topologically Integrated Geographic Encoding and Referencing (MAF/TIGER) Database (MTDB).  The MTDB represents a seamless national file with no overlaps or gaps between parts, however, each TIGER/Line shapefile is designed to stand alone as an independent data set, or they can be combined to cover the entire nation.
 
-Metropolitan and Micropolitan Statistical Areas are together termed Core Based Statistical Areas (CBSAs) and are defined by the Office of Management and Budget (OMB) and consist of the county or counties or equivalent entities associated with at least one urban core (urbanized area or urban cluster) of at least 10,000 population, plus adjacent counties having a high degree of social and economic integration with the core as measured through commuting ties with the counties containing the core.  Categories of CBSAs are: Metropolitan Statistical Areas, based on urbanized areas of 50,000 or more population; and Micropolitan Statistical Areas, based on urban clusters of at least 10,000 population but less than 50,000 population.  
+Metropolitan and Micropolitan Statistical Areas are together termed Core Based Statistical Areas (CBSAs) and are defined by the Office of Management and Budget (OMB) and consist of the county or counties or equivalent entities associated with at least one urban core (urbanized area or urban cluster) of at least 10,000 population, plus adjacent counties having a high degree of social and economic integration with the core as measured through commuting ties with the counties containing the core.  Categories of CBSAs are: Metropolitan Statistical Areas, based on urbanized areas of 50,000 or more population; and Micropolitan Statistical Areas, based on urban clusters of at least 10,000 population but less than 50,000 population.
 
 The CBSA boundaries are those defined by OMB based on the 2010 Census, published in 2013, and updated in 2020.</gco:CharacterString>
          </gmd:abstract>
@@ -286,9 +286,9 @@ The CBSA boundaries are those defined by OMB based on the 2010 Census, published
                <gmd:thesaurusName>
                   <gmd:CI_Citation>
                      <gmd:title>
-                        <gco:CharacterString>ANSI INCITS 38:2009 (Formerly FIPS 5-2), 
+                        <gco:CharacterString>ANSI INCITS 38:2009 (Formerly FIPS 5-2),
                   ANSI INCITS 31:2009 (Formerly FIPS 6-4),ANSI INCITS 454:2009
-                  (Formerly FIPS 8-6), ANSI INCITS 455:2009(Formerly FIPS 9-1),                   ANSI INCITS 446:2008 (Geographic Names Information System 
+                  (Formerly FIPS 8-6), ANSI INCITS 455:2009(Formerly FIPS 9-1),                   ANSI INCITS 446:2008 (Geographic Names Information System
                   (GNIS))</gco:CharacterString>
                      </gmd:title>
                      <gmd:date gco:nilReason="unknown"/>
@@ -382,7 +382,7 @@ The boundaries in the TIGER/Line Shapefiles are for statistical data collection 
                <gmd:distributorContact>
                   <gmd:CI_ResponsibleParty>
                      <gmd:organisationName>
-                        <gco:CharacterString>U.S. Department of Commerce, U.S. Census Bureau, 
+                        <gco:CharacterString>U.S. Department of Commerce, U.S. Census Bureau,
        Geography Division, Spatial Data Collection and Products Branch
       </gco:CharacterString>
                      </gmd:organisationName>

@@ -17,22 +17,22 @@ source("https://raw.githubusercontent.com/urbanSpatial/Public-Policy-Analytics-L
 library(stringr)
 
 
-years_filtered <- years_filtered %>% 
-  mutate(GEOID=str_pad(GEOID, 5, pad = "0")) %>% 
-  
+years_filtered <- years_filtered %>%
+  mutate(GEOID=str_pad(GEOID, 5, pad = "0")) %>%
+
   mutate(FIPS.State.Code=substr(GEOID,1,nchar(GEOID)-3),
                                             FIPS.County.Code=substr(GEOID, 3, nchar(GEOID)))
 years_filtered$FIPS.State.Code <- as.numeric(years_filtered$FIPS.State.Code)
 years_filtered$FIPS.County.Code <- as.numeric(years_filtered$FIPS.County.Code)
 
-msa_agg <- years_filtered %>% left_join(msa)%>% mutate(POP_UNDER_18= rowSums(select(., starts_with("AGE")))) %>% 
-  group_by(CBSA.Code,year,AGE_CATEGORY) %>% 
+msa_agg <- years_filtered %>% left_join(msa)%>% mutate(POP_UNDER_18= rowSums(select(., starts_with("AGE")))) %>%
+  group_by(CBSA.Code,year,AGE_CATEGORY) %>%
     mutate(POP_UNDER_18_CBSA= sum(POP_UNDER_18),
       fat_cbsa_year_age= sum(fatality_count),
-           rate_cbsa_age= mean(fat_cbsa_year_age)/mean(POP_UNDER_18_CBSA)*100000) %>% ungroup() %>% 
-group_by(CBSA.Code,year) %>% 
-    mutate(fat_cbsa_year= sum(fatality_count) 
-           ) %>% 
+           rate_cbsa_age= mean(fat_cbsa_year_age)/mean(POP_UNDER_18_CBSA)*100000) %>% ungroup() %>%
+group_by(CBSA.Code,year) %>%
+    mutate(fat_cbsa_year= sum(fatality_count)
+           ) %>%
     group_by(CBSA.Code) %>% mutate(
             mean_pop=mean(POP_UNDER_18_CBSA),
            rate_cbsa=mean(fat_cbsa_year)/mean(POP_UNDER_18_CBSA)*100000)
@@ -43,10 +43,10 @@ nation_shp <- st_read('./SHP/cb_2018_us_nation_20m.shp') %>%st_union()
 
 
 #TOP 20 POPULATED
-rate_sf <- msa_filtered%>% filter(Metropolitan.Micropolitan.Statistical.Area=='Metropolitan Statistical Area') %>% 
-ungroup()  %>% select(CBSA.Code,CBSA.Title,rate_cbsa,mean_pop) %>% distinct() %>% 
+rate_sf <- msa_filtered%>% filter(Metropolitan.Micropolitan.Statistical.Area=='Metropolitan Statistical Area') %>%
+ungroup()  %>% select(CBSA.Code,CBSA.Title,rate_cbsa,mean_pop) %>% distinct() %>%
   slice_max(mean_pop,n= 30) %>%
-  distinct()%>% mutate(CBSA.Code = as.character(CBSA.Code)) %>%  left_join(cbsa_shp, by= c('CBSA.Code'='GEOID' )) %>% st_as_sf() 
+  distinct()%>% mutate(CBSA.Code = as.character(CBSA.Code)) %>%  left_join(cbsa_shp, by= c('CBSA.Code'='GEOID' )) %>% st_as_sf()
 
 
 ggplot(rate_sf)+
@@ -58,7 +58,7 @@ ggplot(rate_sf)+
 ggplot(rate_sf)+
   geom_col(aes(rate_cbsa, fct_reorder(CBSA.Title, rate_cbsa), fill = q5(mean_pop)))+
   scale_fill_manual(values = flatreds5,
-                    labels = qBr(rate_sf, "mean_pop"), 
+                    labels = qBr(rate_sf, "mean_pop"),
                     name = 'Mean Population (Quintiles)') +
    labs(
     title = "Childhood fatality rates across Metropolitan Areas",
@@ -85,7 +85,7 @@ ggplot(carto)+
   geom_sf(nation_shp %>% st_transform(5070), mapping=aes(),fill='grey90', color=NA)+
   geom_sf(aes(fill= q5(rate_cbsa)), color='grey80',lwd=0.2)+
   scale_fill_manual(values = flatreds5,
-                    labels = qBr(carto, "rate_cbsa"), 
+                    labels = qBr(carto, "rate_cbsa"),
                     name = 'Fatalities per 100000 (Quintiles)') +
    labs(
     title = "Child traffic fatality rates across Metropolitan Areas",
@@ -93,7 +93,7 @@ ggplot(carto)+
   ylim(350000, 3200000)+
   xlim(-2500000, 2500000)+
   theme_minimal()+
-  
+
   theme(legend.direction = 'horizontal',
         legend.position = 'bottom')
 
