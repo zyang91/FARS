@@ -35,7 +35,7 @@ FARS$FIPS<-sprintf("%02d%03d", FARS$STATE, FARS$COUNTY)
 ## CBSA
 cbsa code filtering only include selecting counties
 cities:  NYC, Chicago, Philadelphia, LA, D.C., Boston, Seattle, SF, Baltimore, Pittsburgh
-cbsa code for 10 cities on the list 
+cbsa code for 10 cities on the list
 `msa_codes <- c(35620, 16980, 37980, 31080, 47900, 14460, 42660, 41860, 12580, 38300)`
 
 ```{r}
@@ -140,7 +140,7 @@ MSA_2020<-get_decennial(
   filter(GEOID %in% MSA) %>%
   mutate(YEAR=2020)
 ```
-### join the census and ACS data into the FARS 
+### join the census and ACS data into the FARS
 ```{r}
 census_cbsa<- left_join(cbsa_10_summarize, MSA_ACS, by = c("cbsa_code" = "GEOID", "YEAR" = "YEAR")) %>%
   left_join(MSA_2020, by = c("cbsa_code" = "GEOID", "YEAR" = "YEAR"))
@@ -306,14 +306,14 @@ census_county %>% ggplot()+
 '#7a2400',
 '#9f1700'))+
    geom_text(data = census_county%>% group_by(county_name) %>% filter(YEAR == max(YEAR)),
-                  
+
                   aes(label = county_name, x=YEAR, y=fatality_rate),
                   nudge_x = 0.2, hjust = 0, size=3) +
   xlim(2012,2023)+
   theme_minimal() +
   labs(x = "Year", y = "Fatality Rate (per 100000)", color = "County Name")+
   theme(legend.position = 'hide')+
-  ggtitle("Changes in Fatality Rates (2012-2022)", subtitle = 'Counties') 
+  ggtitle("Changes in Fatality Rates (2012-2022)", subtitle = 'Counties')
   ggsave(
   'fatalities_county.jpg',
   plot = last_plot(),
@@ -327,7 +327,7 @@ census_county %>% ggplot()+
   limitsize = TRUE,
   bg = NULL,
   create.dir = FALSE,
-  
+
 )
 ```
 
@@ -345,7 +345,7 @@ census_cbsa %>% ggplot()+
 '#7a2400',
 '#9f1700'))+
    geom_text_repel(data = census_cbsa%>% group_by(cbsa_name) %>% filter(YEAR == max(YEAR)),
-                  
+
                   aes(label = cbsa_name, x=YEAR, y=fatality_rate),
                   nudge_x = 1, hjust = 0, size=3, segment.color=NA,direction = "y") +
   xlim(2012,2024)+
@@ -367,7 +367,7 @@ ggsave(
   limitsize = TRUE,
   bg = NULL,
   create.dir = FALSE,
-  
+
 )
 ```
 ```{r,fig.width=15, fig.height=8}

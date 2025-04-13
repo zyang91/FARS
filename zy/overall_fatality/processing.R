@@ -138,7 +138,7 @@ ggplot(final,aes(x=fatality_rate,y=reorder(title,fatality_rate),fill=total_pop))
     axis.title.y = element_text(size = 12),
     legend.title = element_text(size = 10),  # Smaller legend title
     legend.text = element_text(size = 8),   # Smaller legend text
-    legend.key.size = unit(0.6, "lines") 
+    legend.key.size = unit(0.6, "lines")
   )
 
 highest30<-highest_50%>%
@@ -178,7 +178,7 @@ ggplot(full_children_total,aes(x=fatality_rate,y=reorder(title,fatality_rate),fi
     axis.title.y = element_text(size = 12),
     legend.title = element_text(size = 10),  # Smaller legend title
     legend.text = element_text(size = 8),   # Smaller legend text
-    legend.key.size = unit(0.6, "lines") 
+    legend.key.size = unit(0.6, "lines")
   )
 
 full<-left_join(highest30, fatality, by="cbsa_code")
@@ -210,18 +210,18 @@ ggplot(together, aes(x=children, y=total,label=title))+
     axis.title.y = element_text(size = 12),
     legend.title = element_text(size = 10),  # Smaller legend title
     legend.text = element_text(size = 8),   # Smaller legend text
-    legend.key.size = unit(0.6, "lines") 
+    legend.key.size = unit(0.6, "lines")
   )
 model1<-lm(total~children, data=full)
 summary(model1)
 
 # better plot
-ggplot(full_children_total, aes(x = fatality_rate, 
-                  y = reorder(title, fatality_rate), 
-                  fill = variable, 
+ggplot(full_children_total, aes(x = fatality_rate,
+                  y = reorder(title, fatality_rate),
+                  fill = variable,
                   group = variable)) +
   geom_col(aes(color = variable), position = position_dodge(width = 0.8)) +
-  scale_color_manual(name = "Group", 
+  scale_color_manual(name = "Group",
                      values = c("Group1" = "#000000", "Group2" = "#FF5733")) +  # adjust groups & colors as needed
   labs(
     title = "CBSA fatality rate",

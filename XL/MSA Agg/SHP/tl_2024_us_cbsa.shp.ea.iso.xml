@@ -160,7 +160,7 @@
                   <gfc:FC_ListedValue>
                      <gfc:label gco:nilReason="inapplicable"/>
                      <gfc:definition>
-                        <gco:CharacterString>Metropolitan statistical area/micropolitan statistical area code found 
+                        <gco:CharacterString>Metropolitan statistical area/micropolitan statistical area code found
                in CBSAFP</gco:CharacterString>
                      </gfc:definition>
                   </gfc:FC_ListedValue>

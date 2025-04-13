@@ -8,7 +8,7 @@ pop<-read_csv("allpopdata.csv")
 
 pop<-pop%>%
   select(GEOID,year,AGE0_4,AGE5_9,AGE10_14,AGE15_17,AGE18_19)
- 
+
 fata<-fata%>%
   rename(GEOID= county_code, year=YEAR)
 
@@ -61,7 +61,7 @@ full_join_filter<-full_joined%>%
 
 cbsa_group<-full_join_filter%>%
   group_by(`CBSA Code`,`CBSA Title`, AGE_CATEGORY)%>%
-  summarise(fatality_count=sum(fatality_count), 
+  summarise(fatality_count=sum(fatality_count),
             AGE0_4=sum(AGE0_4),
             AGE5_9=sum(AGE5_9),
             AGE10_14=sum(AGE10_14),
@@ -92,7 +92,7 @@ full_join_filter2018<-full_joined2018%>%
 
 cbsa_group2018<-full_join_filter2018%>%
   group_by(`CBSA Code`,`CBSA Title`, AGE_CATEGORY)%>%
-  summarise(fatality_count=sum(fatality_count), 
+  summarise(fatality_count=sum(fatality_count),
             AGE0_4=sum(AGE0_4),
             AGE5_9=sum(AGE5_9),
             AGE10_14=sum(AGE10_14),
@@ -119,7 +119,7 @@ full_join_filter2019<-full_joined2019%>%
 
 cbsa_group2019<-full_join_filter2019%>%
   group_by(`CBSA Code`,`CBSA Title`, AGE_CATEGORY)%>%
-  summarise(fatality_count=sum(fatality_count), 
+  summarise(fatality_count=sum(fatality_count),
             AGE0_4=sum(AGE0_4),
             AGE5_9=sum(AGE5_9),
             AGE10_14=sum(AGE10_14),
@@ -146,7 +146,7 @@ full_join_filter2021<-full_joined2021%>%
 
 cbsa_group2021<-full_join_filter2021%>%
   group_by(`CBSA Code`,`CBSA Title`, AGE_CATEGORY)%>%
-  summarise(fatality_count=sum(fatality_count), 
+  summarise(fatality_count=sum(fatality_count),
             AGE0_4=sum(AGE0_4),
             AGE5_9=sum(AGE5_9),
             AGE10_14=sum(AGE10_14),
@@ -173,7 +173,7 @@ full_join_filter2022<-full_joined2022%>%
 
 cbsa_group2022<-full_join_filter2022%>%
   group_by(`CBSA Code`,`CBSA Title`, AGE_CATEGORY)%>%
-  summarise(fatality_count=sum(fatality_count), 
+  summarise(fatality_count=sum(fatality_count),
             AGE0_4=sum(AGE0_4),
             AGE5_9=sum(AGE5_9),
             AGE10_14=sum(AGE10_14),

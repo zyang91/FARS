@@ -11,11 +11,11 @@ dbListTables(con)
 
 
 query <- "
-  SELECT 
+  SELECT
     YEAR,
     STATE,
     COUNTY,
-    CASE 
+    CASE
       WHEN age < 5 THEN 1
       WHEN age >= 5 AND age < 10 THEN 2
       WHEN age >= 10 AND age < 15 THEN 3

@@ -8,7 +8,7 @@ pop<-read_csv("allpopdata.csv")
 
 pop<-pop%>%
   select(GEOID,year,AGE0_4,AGE5_9,AGE10_14,AGE15_17,AGE18_19)
- 
+
 fata<-fata%>%
   rename(GEOID= county_code, year=YEAR)
 
@@ -22,7 +22,7 @@ full<- full_join(fata,pop, by=c("GEOID","year"))
 write.csv(full, "full.csv")
 
 
-# read the data 
+# read the data
 full<-read_csv("full.csv")
 
 full<-full%>%

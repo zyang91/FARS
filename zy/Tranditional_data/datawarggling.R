@@ -23,7 +23,7 @@ FARS2010<- dbGetQuery(con, "SELECT * FROM person2010")
 dbDisconnect(con, shutdown = TRUE)
 
 #selection of useful variable
-FARS2022_filter<- FARS2022 %>% 
+FARS2022_filter<- FARS2022 %>%
   select(ST_CASE,
          STATE,
          STATENAME,
@@ -35,7 +35,7 @@ FARS2022_filter<- FARS2022 %>%
          INJ_SEVNAME)
 
 ## Notes: 1. connect duckdb database, 2. bring in the whole table into R varaibles
-## 3. select useful variables using tidyverse(dplyr) package 
+## 3. select useful variables using tidyverse(dplyr) package
 ## 4. close the connection after finished
 ## Please do not write any additional table into this dataset. It will be easier to keep only raw data into this one.
 
@@ -71,7 +71,7 @@ process_FARS_data <- function(data) {
       INJ_SEV,
       INJ_SEVNAME
     )
-  
+
   # Add agegroup column
   data_filtered <- data_filtered %>%
     mutate(
@@ -84,11 +84,11 @@ process_FARS_data <- function(data) {
         AGE >= 200 ~ 6
       )
     )
-  
+
   # Filter rows where INJ_SEV is fatality
   data_filtered <- data_filtered %>%
     filter(INJ_SEV == 4)
-  
+
   #create unique fips code
   data_filtered<- data_filtered%>%
     mutate(county_code= sprintf("%02d%03d", data_filtered$STATE, data_filtered$COUNTY) )
@@ -116,7 +116,7 @@ process_FARS_data2 <- function(data) {
       SEX,
       INJ_SEV,
     )
-  
+
   # Add agegroup column
   data_filtered <- data_filtered %>%
     mutate(
@@ -129,11 +129,11 @@ process_FARS_data2 <- function(data) {
         AGE >= 200 ~ 6
       )
     )
-  
+
   # Filter rows where INJ_SEV is fatality
   data_filtered <- data_filtered %>%
     filter(INJ_SEV == 4)
-  
+
   #create unique fips code
   data_filtered<- data_filtered%>%
     mutate(county_code= sprintf("%02d%03d", data_filtered$STATE, data_filtered$COUNTY) )
@@ -162,7 +162,7 @@ process_FARS_data2020 <- function(data) {
       INJ_SEV,
       INJ_SEVNAME
     )
-  
+
   # Add agegroup column
   data_filtered <- data_filtered %>%
     mutate(
@@ -175,11 +175,11 @@ process_FARS_data2020 <- function(data) {
         AGE >= 200 ~ 6
       )
     )
-  
+
   # Filter rows where INJ_SEV is fatality
   data_filtered <- data_filtered %>%
     filter(INJ_SEV == 4)
-  
+
   #create unique fips code
   data_filtered<- data_filtered%>%
     mutate(county_code= sprintf("%02d%03d", data_filtered$STATE, data_filtered$COUNTY) )
@@ -203,6 +203,6 @@ FARS2020_filtered <- process_FARS_data2020(FARS2020)
 
 
 ## No age data
-FARS2022_noage<- FARS2022 %>% 
+FARS2022_noage<- FARS2022 %>%
   filter(AGE==999|AGE==998)%>%
   select(STATE,AGE,COUNTY)
